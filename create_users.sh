@@ -4,7 +4,7 @@
 
 numberOfUsers=$1
 index=1
-password="password"
+password="livingsingle"
 
 if [ -z "$numberOfUsers" ]
 then
@@ -17,9 +17,19 @@ fi
 while [ $index -le $numberOfUsers ]; do
     # Enter username
     echo "Enter username"
-    # Set to default password
     read username
+    
+    # Check if the username already exists
+    if id "$username" &>/dev/null; then
+        echo "User $username already exists. Please choose a different username."
+        continue
+    fi
+    
+    # Create the new user
     sudo useradd $username
-    sudo passwd $username
+
+    # Set the password for the user
+    echo "$username:$password" | sudo chpasswd
+
     ((index++))
 done
